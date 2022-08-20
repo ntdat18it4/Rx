@@ -28,11 +28,15 @@ class MainActivity : AppCompatActivity() {
         adapter = UserAdapter(UserList.userList)
         binding.rv.layoutManager = LinearLayoutManager(this)
         binding.rv.adapter = adapter
+        viewModel.users.subscribe(
+            { users ->
+                adapter.userList = users
+                adapter.notifyDataSetChanged()
+            }, { error ->
+                println(error)
+            }
+        )
 
-        viewModel.data.observe(this) {
-            adapter.userList = it
-            adapter.notifyDataSetChanged()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.searchUser(newText)
+                newText?.let { viewModel.onSearchQuery(it) }
                 return false
             }
 

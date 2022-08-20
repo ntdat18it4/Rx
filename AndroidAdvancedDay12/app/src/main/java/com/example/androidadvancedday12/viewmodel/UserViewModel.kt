@@ -1,36 +1,20 @@
 package com.example.androidadvancedday12.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.androidadvancedday12.model.User
 import com.example.androidadvancedday12.model.UserList
-import com.example.androidadvancedday12.model.UserList.userList
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class UserViewModel : ViewModel() {
-    private val _data = MutableLiveData<List<User>>(emptyList())
-    val data: LiveData<List<User>> get() = _data
+    private val query = PublishSubject.create<String>()
 
-    fun searchUser(query: String?) {
-        println(query)
-        if (query?.isNotEmpty() == true) {
-            _data.value = _data.value?.filter {
-                it.username.contains(query) || it.classname.contains(query)
-            }
-        } else {
-            _data.value = userList
+    val users = query
+        .distinctUntilChanged()
+        .map {
+            UserList.userList.filter { user -> user.username.contains(it, ignoreCase = true) ||user.classname.contains(it, ignoreCase = true) }
         }
+        .distinctUntilChanged()
+
+    fun onSearchQuery(newText: String) {
+        query.onNext(newText)
     }
-
-    val filteredUser: MutableList<User> = mutableListOf()
-    val oldFilteredUser: MutableList<User> = mutableListOf()
-
-    init {
-        oldFilteredUser.addAll(userList)
-        _data.value = userList
-    }
-
-//    fun filterOperator() : Observable<User>{
-//        return Observable.fromIterablle
-//    }
 }
