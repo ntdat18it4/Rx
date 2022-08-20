@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidadvancedday12.databinding.ItemUserBinding
 import com.example.androidadvancedday12.model.User
 
-class UserAdapter( private val userList: List<User>) :
+class UserAdapter(var userList: List<User>) :
     RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
-    var listUser: ArrayList<User> = ArrayList()
     var listUserFiltered: ArrayList<User> = ArrayList()
 
-    inner class ViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemUserBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun binItem(user: User) {
             binding.tvId.text = user.id.toString()
             binding.tvName.text = user.username
@@ -35,7 +35,7 @@ class UserAdapter( private val userList: List<User>) :
         holder.binItem(user)
     }
 
-    override fun getItemCount():Int = userList.size
+    override fun getItemCount(): Int = userList.size
 
 
 }
